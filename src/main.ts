@@ -23,7 +23,6 @@ export default class TagExplorerPlugin extends Plugin {
         this.addSettingTab(new SettingsTab(this.app, this));
 
         // Views
-        if (dev) console.log("viewType used with registerView:", TagExplorerViewType);
         this.registerView(TagExplorerViewType, (leaf: WorkspaceLeaf) => new TagExplorerView(leaf));
 
         // Commands
@@ -80,8 +79,6 @@ export default class TagExplorerPlugin extends Plugin {
     }
 
     async openPane(viewType: string, reveal = false, toggle = false): Promise<void> {
-        /** @todo data-type attribute of the resulting workspace-leaf-content is undefined, and I don't know why */
-        if (dev) console.log("viewType used with setViewState:", viewType);
         if (!this.app.workspace.getLeavesOfType(viewType).length) {
             await this.app.workspace.getRightLeaf(false).setViewState({
                 type: viewType,
