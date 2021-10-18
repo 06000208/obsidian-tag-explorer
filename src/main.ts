@@ -14,7 +14,6 @@ const DEFAULT_SETTINGS: TagExplorerSettings = {
 
 export default class TagExplorerPlugin extends Plugin {
     settings: TagExplorerSettings;
-    explorerPane: null | TagExplorerView;
 
     async onload() {
         if (dev) console.log("Loading tag explorer plugin");
@@ -24,11 +23,10 @@ export default class TagExplorerPlugin extends Plugin {
         this.addSettingTab(new SettingsTab(this.app, this));
 
         // Views
-        // Won't be instantiated until setViewState() is used
-        this.explorerPane = null;
         if (dev) console.log("viewType used with registerView:", TagExplorerViewType);
-        this.registerView(TagExplorerViewType, (leaf: WorkspaceLeaf) => (this.explorerPane = new TagExplorerView(leaf)));
+        this.registerView(TagExplorerViewType, (leaf: WorkspaceLeaf) => new TagExplorerView(leaf));
 
+        // Commands
         this.addCommand({
             id: "toggle-tag-explorer-pane",
             name: "Toggle Tag Explorer",
@@ -37,12 +35,14 @@ export default class TagExplorerPlugin extends Plugin {
             }.bind(this),
         });
 
+        // Ribbons
         this.addRibbonIcon("dice", "Print leaf types", () => {
             this.app.workspace.iterateAllLeaves((leaf) => {
                 console.log(leaf.getViewState().type);
             });
         });
 
+        // Initialization
         if (this.app.workspace.layoutReady) {
             this.initWorkspace();
         } else {
@@ -53,8 +53,7 @@ export default class TagExplorerPlugin extends Plugin {
 
     async onunload() {
         console.log("unloading Items plugin");
-        await this.closePanes(TagExplorerViewType, this.explorerPane);
-
+        await this.closePanes(TagExplorerViewType);
     }
 
     initWorkspace() {
@@ -70,9 +69,13 @@ export default class TagExplorerPlugin extends Plugin {
         await this.saveData(this.settings);
     }
 
-    async closePanes(viewType: string, view: null | TagExplorerView = null): Promise<void> {
-        // Views aren't instantiated until setViewState() is used
-        if (view) await view.onClose();
+    async closePanes(viewType: string): Promise<void> {
+        const leaves = this.app.workspace.getLeavesOfType(viewType);
+        for (const leaf of leaves) {
+            if (leaf.view instanceof TagExplorerView) {
+                await leaf.view.onClose();
+            }
+        }
         this.app.workspace.detachLeavesOfType(viewType);
     }
 
