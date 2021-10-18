@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { App, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, ItemView } from "obsidian";
-import { TagExplorerViewType, TagExplorerView }  from "./panes";
+import { TagExplorerViewType, TagExplorerView } from "./panes";
 
 const dev = process.env.BUILD !== "production";
 
@@ -26,6 +26,7 @@ export default class TagExplorerPlugin extends Plugin {
         // Views
         // Won't be instantiated until setViewState() is used
         this.explorerPane = null;
+        if (dev) console.log("viewType used with registerView:", TagExplorerViewType);
         this.registerView(TagExplorerViewType, (leaf: WorkspaceLeaf) => (this.explorerPane = new TagExplorerView(leaf)));
 
         this.addCommand({
@@ -34,6 +35,12 @@ export default class TagExplorerPlugin extends Plugin {
             callback: function() {
                 this.openPane(TagExplorerViewType, true, true);
             }.bind(this),
+        });
+
+        this.addRibbonIcon("dice", "Print leaf types", () => {
+            this.app.workspace.iterateAllLeaves((leaf) => {
+                console.log(leaf.getViewState().type);
+            });
         });
 
         if (this.app.workspace.layoutReady) {
@@ -71,7 +78,7 @@ export default class TagExplorerPlugin extends Plugin {
 
     async openPane(viewType: string, reveal = false, toggle = false): Promise<void> {
         /** @todo data-type attribute of the resulting workspace-leaf-content is undefined, and I don't know why */
-        if (dev) console.log("viewTypeId used with setViewState:", viewType);
+        if (dev) console.log("viewType used with setViewState:", viewType);
         if (!this.app.workspace.getLeavesOfType(viewType).length) {
             await this.app.workspace.getRightLeaf(false).setViewState({
                 type: viewType,

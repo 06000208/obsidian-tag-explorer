@@ -5,17 +5,17 @@ export const TagExplorerViewType = "tag-explorer-pane";
 export const TagExplorerDisplayName = "Tag Explorer";
 
 export class TagExplorerView extends ItemView {
-    viewTypeId: string;
+    viewType: string;
     displayName: string;
 
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
-        this.viewTypeId = TagExplorerViewType;
+        this.viewType = TagExplorerViewType;
         this.displayName = TagExplorerDisplayName;
     }
 
     getViewType(): string {
-        return this.viewTypeId;
+        return this.viewType;
     }
 
     getDisplayText(): string {
