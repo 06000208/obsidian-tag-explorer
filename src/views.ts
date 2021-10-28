@@ -1,11 +1,14 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
 import "./explorer.css";
 
-// Can't define these inside the constructor, because when getViewType is used by obsidian, the constructor hasn't ran yet
+// Can't define these inside the constructor, because when getViewType is used by obsidian, the constructor somehow hasn't ran yet
 // https://discord.com/channels/686053708261228577/840286264964022302/899785798738640916
 export const TagExplorerViewType = "tag-explorer-pane";
 export const TagExplorerDisplayName = "Tag Explorer";
 
+/**
+ * Custom view used to create the Tag Explorer pane
+ */
 export class TagExplorerView extends ItemView {
     constructor(leaf: WorkspaceLeaf) {
         super(leaf);
@@ -26,6 +29,6 @@ export class TagExplorerView extends ItemView {
     }
 
     async onClose() {
-        // Nothing to clean up.
+        // Nothing to clean up
     }
 }

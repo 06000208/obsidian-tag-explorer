@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { App, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, ItemView } from "obsidian";
-import { TagExplorerViewType, TagExplorerView } from "./panes";
+import { TagExplorerViewType, TagExplorerView } from "./views";
 
 const dev = process.env.BUILD !== "production";
 
@@ -35,11 +35,13 @@ export default class TagExplorerPlugin extends Plugin {
         });
 
         // Ribbons
-        this.addRibbonIcon("dice", "Print leaf types", () => {
-            this.app.workspace.iterateAllLeaves((leaf) => {
-                console.log(leaf.getViewState().type);
+        if (dev) {
+            this.addRibbonIcon("dice", "Print leaf types", () => {
+                this.app.workspace.iterateAllLeaves((leaf) => {
+                    console.log(leaf.getViewState().type);
+                });
             });
-        });
+        }
 
         // Initialization
         if (this.app.workspace.layoutReady) {
@@ -51,7 +53,7 @@ export default class TagExplorerPlugin extends Plugin {
     }
 
     async onunload() {
-        console.log("unloading Items plugin");
+        if (dev) console.log("unloading Items plugin");
         await this.closePanes(TagExplorerViewType);
     }
 
@@ -113,7 +115,7 @@ class SettingsTab extends PluginSettingTab {
                 .setPlaceholder("Enter your secret")
                 .setValue("")
                 .onChange(async (value) => {
-                    console.log("Secret: " + value);
+                    if (dev) console.log("Secret: " + value);
                     this.plugin.settings.mySetting = value;
                     await this.plugin.saveSettings();
                 }));
