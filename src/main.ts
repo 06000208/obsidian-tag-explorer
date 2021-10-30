@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { App, Notice, Plugin, PluginSettingTab, Setting, WorkspaceLeaf, ItemView } from "obsidian";
 import { TagExplorerViewType, TagExplorerView } from "./views";
-
-const dev = process.env.BUILD !== "production";
+import { dev } from "./constants";
 
 interface TagExplorerSettings {
     mySetting: string;
@@ -36,7 +35,7 @@ export default class TagExplorerPlugin extends Plugin {
 
         // Ribbons
         if (dev) {
-            this.addRibbonIcon("dice", "Print leaf types", () => {
+            this.addRibbonIcon("question-mark-glyph", "Print leaf types", () => {
                 this.app.workspace.iterateAllLeaves((leaf) => {
                     console.log(leaf.getViewState().type);
                 });

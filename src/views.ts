@@ -1,4 +1,5 @@
 import { ItemView, WorkspaceLeaf } from "obsidian";
+import { dev } from "./constants";
 import "./explorer.css";
 
 // Can't define these inside the constructor, because when getViewType is used by obsidian, the constructor somehow hasn't ran yet
